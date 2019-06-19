@@ -1,7 +1,6 @@
 package GettingStudentById
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	Model "../../Model"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gocql/gocql"
 	"github.com/gorilla/mux"
 )
 
@@ -16,28 +16,30 @@ type Student Model.Student
 
 func ReturnAStudent(w http.ResponseWriter, r *http.Request) {
 	var Students []Student
-	db, err := sql.Open("mysql", "root:12345678@tcp(127.0.0.1:3306)/acheron")
-	if err != nil {
-		log.Print(err.Error())
-	}
-	defer db.Close()
+	cluster := gocql.NewCluster("127.0.0.1")
+	cluster.Keyspace = "acheron"
+	cluster.Consistency = gocql.Quorum
+	session, _ := cluster.CreateSession()
+	defer session.Close()
 
 	vars := mux.Vars(r)
 	ID := vars["id"]
-	results, err := db.Query("select * from student where Id=" + ID)
-	if err != nil {
-		panic(err.Error())
+	var Student Student
+	if err := session.Query(`SELECT id,name,age,country,email FROM student WHERE id = ? LIMIT 1`,
+		ID).Consistency(gocql.One).Scan(&Student.Id, &Student.Name, &Student.Age, &Student.Country, &Student.Email); err != nil {
+		log.Fatal(err)
 	}
+	fmt.Println(Student)
+	Students = append(Students, Student)
+	// for results.Next() {
+	// 	var Student Student
+	// 	err = results.Scan(&Student.Id, &Student.Name, &Student.Age, &Student.Country, &Student.Email)
+	// 	if err != nil {
+	// 		panic(err.Error())
+	// 	}
 
-	for results.Next() {
-		var Student Student
-		err = results.Scan(&Student.Id, &Student.Name, &Student.Age, &Student.Country, &Student.Email)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		Students = append(Students, Student)
-	}
-	fmt.Println("Endpoint Hit: GetAllStudents")
+	// 	Students = append(Students, Student)
+	// }
+	fmt.Println("Endpoint Hit: GetStudentsById")
 	json.NewEncoder(w).Encode(Students)
 }
