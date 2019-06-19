@@ -31,15 +31,7 @@ func ReturnAStudent(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(Student)
 	Students = append(Students, Student)
-	// for results.Next() {
-	// 	var Student Student
-	// 	err = results.Scan(&Student.Id, &Student.Name, &Student.Age, &Student.Country, &Student.Email)
-	// 	if err != nil {
-	// 		panic(err.Error())
-	// 	}
 
-	// 	Students = append(Students, Student)
-	// }
 	fmt.Println("Endpoint Hit: GetStudentsById")
 	json.NewEncoder(w).Encode(Students)
 }
