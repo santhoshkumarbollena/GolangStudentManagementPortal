@@ -15,6 +15,11 @@ import (
 type Student Model.Student
 
 func CreateNewStudent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT, GET, OPTIONS, POST, DELETE")
+	//w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
+	w.Header().Set("Access-Control-Expose-Headers", "Authorization")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var Students []Student
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var Student Student

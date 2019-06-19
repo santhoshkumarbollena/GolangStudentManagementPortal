@@ -14,6 +14,10 @@ import (
 type Student Model.Student
 
 func ReturnAllStudents(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
+	w.Header().Add("Access-Control-Allow-Methods", "OPTION")
+	w.Header().Add("Content-Type", "application/json")
 	//connection to cassandra
 	cluster := gocql.NewCluster("127.0.0.1")
 	cluster.Keyspace = "acheron"

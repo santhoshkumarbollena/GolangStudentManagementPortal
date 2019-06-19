@@ -18,8 +18,8 @@ func main() {
 	myRouter.HandleFunc("/GetStudentById/{id}", GetStudentById.ReturnAStudent)
 	myRouter.HandleFunc("/GetAllStudents", GetAllStudents.ReturnAllStudents)
 	myRouter.HandleFunc("/AddStudent", AddStudent.CreateNewStudent).Methods("POST")
-	myRouter.HandleFunc("/UpdateStudent", UpdateStudent.UpdateStudent).Methods("PUT")
-	myRouter.HandleFunc("/DeleteStudent/{id}", DeleteStudent.DeleteAStudent).Methods("DELETE")
+	myRouter.HandleFunc("/UpdateStudent", UpdateStudent.UpdateStudent).Methods("PUT", "OPTIONS")
+	myRouter.HandleFunc("/DeleteStudent/{id}", DeleteStudent.DeleteAStudent).Methods("DELETE", "OPTIONS")
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 
 	// http.HandleFunc("/GetStudentById", GetStudentById.ReturnAStudent)

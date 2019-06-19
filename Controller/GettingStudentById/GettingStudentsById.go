@@ -15,6 +15,10 @@ import (
 type Student Model.Student
 
 func ReturnAStudent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	var Students []Student
 	cluster := gocql.NewCluster("127.0.0.1")
 	cluster.Keyspace = "acheron"
