@@ -1,3 +1,27 @@
+
+Input:
+ {
+    "requestId" :                   "stringrequestId", 
+	"memberId":                     "string memberId",
+	"memberIdType"    :              "string memberIdType",
+	"referedToSpecialtyCategory":   "string referedToSpecialtyCategory",
+	"referedToSpecialityCode" :      ["string referedToSpecialityCode","string2","string3"],
+	"referedToSpecialityAreaOfBody": "string referedToSpecialityAreaOfBody",
+	"providerIds"   :                ["string providerIds","string2","string3"],
+	"searchFilterCriteria"   :       "string searchFilterCriteria",
+	"callingApp"         :       "string callingApp",
+	"callingAppType"     :           "string callingAppType"
+   }
+
+
+
+
+
+
+
+
+
+
    {
     "requestId" :                   "string", 
 	"memberId":                     "string ",

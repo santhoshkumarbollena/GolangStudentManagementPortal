@@ -21,25 +21,31 @@ func main() {
 }
 
 type Input struct {
-	RequestId                     string `json:"requestId"`
-	MemberId                      string `json:"memberId"`
-	MemberIdType                  string `json:"memberIdType"`
-	ReferedToSpecialtyCategory    string `json:"referedToSpecialtyCategory"`
-	ReferedToSpecialityCode       string `json:"referedToSpecialityCode"`
-	ReferedToSpecialityAreaOfBody string `json:"referedToSpecialityAreaOfBody"`
-	ProviderIds                   string `json:"providerIds"`
-	SearchFilterCriteria          string `json:"searchFilterCriteria"`
-	CallingApp                    string `json:"callingApp"`
-	CallingAppType                string `json:"callingAppType"`
+	RequestId                     string   `json:"requestId"`
+	MemberId                      string   `json:"memberId"`
+	MemberIdType                  string   `json:"memberIdType"`
+	ReferedToSpecialtyCategory    string   `json:"referedToSpecialtyCategory"`
+	ReferedToSpecialityCode       []string `json:"referedToSpecialityCode"`
+	ReferedToSpecialityAreaOfBody string   `json:"referedToSpecialityAreaOfBody"`
+	ProviderIds                   []string `json:"providerIds"`
+	SearchFilterCriteria          string   `json:"searchFilterCriteria"`
+	CallingApp                    string   `json:"callingApp"`
+	CallingAppType                string   `json:"callingAppType"`
+}
+type Providers struct {
+	ProviderDemoValue string
+}
+type Object struct {
+	ObjectDemoValue string
 }
 type Output struct {
-	ResponseId     string `json:"responseId"`
-	Providers      string `json:"providers"`
-	NPI            string `json:"NPI"`
-	Ranking        string `json:"ranking"`
-	ResponseStatus string `json:"responseStatus"`
-	StatusCode     string `json:"statusCode"`
-	StatusMessage  string `json:"statusMessage"`
+	ResponseId     string      `json:"responseId"`
+	Providers      []Providers `json:"providers"`
+	NPI            string      `json:"NPI"`
+	Ranking        string      `json:"ranking"`
+	ResponseStatus Object      `json:"responseStatus"`
+	StatusCode     string      `json:"statusCode"`
+	StatusMessage  string      `json:"statusMessage"`
 }
 
 func AddingAStudent(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +59,9 @@ func AddingAStudent(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(reqBody, &Input)
 
 	fmt.Println("1st Service")
+	fmt.Println()
 	fmt.Println(Input)
+	fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
@@ -62,24 +70,31 @@ func AddingAStudent(w http.ResponseWriter, r *http.Request) {
 	defer Response2ndService.Body.Close()
 
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
-	//fmt.Println(string(ResponseBody))
+	fmt.Println()
+	fmt.Println("Printing Response")
+	fmt.Println(string(ResponseBody))
 
 	json.NewEncoder(w).Encode(string(ResponseBody))
 }
 func AddingEmploye(w http.ResponseWriter, r *http.Request) {
 	var Output Output
+	Provider := Providers{"demo"}
+	var Providers []Providers
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var Input Input
 	json.Unmarshal(reqBody, &Input)
-
+	Providers = append(Providers, Provider)
+	fmt.Println()
 	fmt.Println("2nd Service")
+	fmt.Println()
 	fmt.Println(Input)
+	fmt.Println()
 	//Setting output values in service 2
 	Output.ResponseId = "responseid"
-	Output.Providers = "Providers"
+	Output.Providers = Providers
 	Output.NPI = "NPI"
 	Output.Ranking = "Ranking"
-	Output.ResponseStatus = "ResponseStatus"
+	Output.ResponseStatus = Object{"ObjectValueValue"}
 	Output.StatusCode = "StatusCode"
 	Output.StatusMessage = "StatusMessage"
 
