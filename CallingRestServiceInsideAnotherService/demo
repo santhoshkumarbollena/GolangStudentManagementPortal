@@ -1,0 +1,24 @@
+   {
+    "requestId" :                   "string", 
+	"memberId":                     "string ",
+	"memberIdType"   :               "string ",
+	"referedToSpecialtyCategory":   "string ",
+	"referedToSpecialityCode" :      "string ",
+	"referedToSpecialityAreaOfBody": "string ",
+	"providerIds"   :                "string ",
+	"searchFilterCriteria"   :       "string ",
+	"callingApp"         :       "string ",
+	"callingAppType"     :           "string "
+   }
+
+
+    requestId                     string `json:"requestId"`
+	memberId                      string `json:"memberId"`
+	memberIdType                  string `json:"memberIdType"`
+	referedToSpecialtyCategory    string `json:"referedToSpecialtyCategory"`
+	referedToSpecialityCode       string `json:"referedToSpecialityCode"`
+	referedToSpecialityAreaOfBody string `json:"referedToSpecialityAreaOfBody"`
+	providerIds                   string `json:"providerIds"`
+	searchFilterCriteria          string `json:"searchFilterCriteria"`
+	callingApp                    string `json:"callingApp"`
+	callingAppType                string `json:"callingAppType"`
