@@ -14,8 +14,8 @@ import (
 func main() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
-	myRouter.HandleFunc("/AddStudent", AddingAStudent).Methods("POST")
-	myRouter.HandleFunc("/AddAEmployee", AddingEmploye).Methods("POST")
+	myRouter.HandleFunc("/FirstService", FirstService).Methods("POST")
+	myRouter.HandleFunc("/SecondService", SecondService).Methods("POST")
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 
 }
@@ -48,7 +48,7 @@ type Output struct {
 	StatusMessage  string      `json:"statusMessage"`
 }
 
-func AddingAStudent(w http.ResponseWriter, r *http.Request) {
+func FirstService(w http.ResponseWriter, r *http.Request) {
 	// resp, _ := http.Get("http://localhost:10000/GetAllEmployes")
 	// defer resp.Body.Close()
 	// body, _ := ioutil.ReadAll(resp.Body)
@@ -66,7 +66,7 @@ func AddingAStudent(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(string(reqBody))
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
 
-	Response2ndService, _ := http.Post("http://localhost:10000/AddAEmployee", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+	Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
 	defer Response2ndService.Body.Close()
 
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
@@ -76,7 +76,7 @@ func AddingAStudent(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(string(ResponseBody))
 }
-func AddingEmploye(w http.ResponseWriter, r *http.Request) {
+func SecondService(w http.ResponseWriter, r *http.Request) {
 	var Output Output
 	Provider := Providers{"demo"}
 	var Providers []Providers

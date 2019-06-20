@@ -1,4 +1,6 @@
-
+Type :Post
+URI:
+http://localhost:10000/FirstService
 Input:
  {
     "requestId" :                   "stringrequestId", 
