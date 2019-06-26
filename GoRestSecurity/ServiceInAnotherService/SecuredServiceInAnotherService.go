@@ -105,8 +105,8 @@ func main() {
 	//fmt.Println(d[0])
 
 fmt.Println("--")
-fmt.Println("http://localhost:9096/SecondService?access_token="+d[0])
-	Response2ndService, _ := http.Post("http://localhost:9096/SecondService?access_token="+d[0], "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+fmt.Println("http://localhost:10000/SecondService?access_token="+d[0])
+	Response2ndService, _ := http.Post("http://localhost:10000/SecondService?access_token="+d[0], "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
 	defer Response2ndService.Body.Close()
 
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
@@ -148,7 +148,7 @@ fmt.Println("http://localhost:9096/SecondService?access_token="+d[0])
       w.Write([]byte("Hello, I'm protected"))
    }, srv))
 
-   log.Fatal(http.ListenAndServe(":9096", myRouter))
+   log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
 
 func validateToken(f http.HandlerFunc, srv *server.Server) http.HandlerFunc {
