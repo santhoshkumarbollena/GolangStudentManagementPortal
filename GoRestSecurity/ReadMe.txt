@@ -1,3 +1,47 @@
+Docker :
+
+Building A Docker Container :
+
+docker build -f Dockerfile -t docker-go-secured-rest-service-inside-another-service .
+
+
+
+Running a Docker Container :
+docker run -p 10000:10000 docker-go-secured-rest-service-inside-another-service
+
+
+
+To get Access-Key:
+
+http://localhost:10000/token?grant_type=client_credentials&client_id=demo&client_secret=demo&scope=all
+
+The response contains Access Key Copy That key and paste it in below url
+
+http://localhost:10000/FirstService?access_token=ACCESS_KEY_PASTE_HERE
+
+request method:POST
+
+body:
+ {
+    "requestId" :                   "stringrequestId", 
+	"memberId":                     "string memberId",
+	"memberIdType"    :              "string memberIdType",
+	"referedToSpecialtyCategory":   "string referedToSpecialtyCategory",
+	"referedToSpecialityCode" :      ["string referedToSpecialityCode","string2","string3"],
+	"referedToSpecialityAreaOfBody": "string referedToSpecialityAreaOfBody",
+	"providerIds"   :                ["string providerIds","string2","string3"],
+	"searchFilterCriteria"   :       "string searchFilterCriteria",
+	"callingApp"         :       "string callingApp",
+	"callingAppType"     :           "string callingAppType"
+   }
+
+
+
+
+
+
+Without Docker:
+
 I set the client Id and Client Secret to "demo" and "demo"
 
 
