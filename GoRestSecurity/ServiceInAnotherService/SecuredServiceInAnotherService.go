@@ -59,23 +59,7 @@ func main() {
       srv.HandleTokenRequest(w, r)
    })
   
-//    myRouter.HandleFunc("/credentials", func(w http.ResponseWriter, r *http.Request) {
-//       clientId := "demo"
-//       clientSecret := "demo"
-//       err := clientStore.Set(clientId, &models.Client{
-//          ID:     clientId,
-//          Secret: clientSecret,
-//          Domain: "http://localhost:9094",
-//       })
-//       if err != nil {
-//          fmt.Println(err.Error())
-//       }
 
-//       w.Header().Set("Content-Type", "application/json")
-//       json.NewEncoder(w).Encode(map[string]string{"CLIENT_ID": clientId, "CLIENT_SECRET": clientSecret})
-//    })
-
-    //
 	
 
 	myRouter.HandleFunc("/FirstService", validateToken(func(w http.ResponseWriter, r *http.Request){
@@ -89,24 +73,51 @@ func main() {
 	fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
+	if(Input.RequestId==""){
+		json.NewEncoder(w).Encode(string("Error : RequestId Required Field "))
+		return
+	}
+	if(Input.MemberId==""){
+		json.NewEncoder(w).Encode(string("Error : MemberId Required Field "))
+		return
+	}
+	if(Input.MemberIdType==""){
+		json.NewEncoder(w).Encode(string("Error : MemberIdType Required Field "))
+		return
+	}
+	if(Input.ReferedToSpecialtyCategory==""){
+		json.NewEncoder(w).Encode(string("Error : ReferedToSpecialtyCategory Required Field "))
+		return
+	}
+	if(len(Input.ProviderIds)==0){
+		json.NewEncoder(w).Encode(string("Error : ProviderIds Required Field "))
+		return
+	}
+	if(Input.SearchFilterCriteria==""){
+		json.NewEncoder(w).Encode(string("Error : SearchFilterCriteria Required Field "))
+		return
+	}
+	if(Input.CallingApp==""){
+		json.NewEncoder(w).Encode(string("Error : CallingApp Required Field "))
+		return
+	}
+	if(Input.CallingAppType==""){
+		json.NewEncoder(w).Encode(string("Error : CallingAppType Required Field "))
+		return
+	}
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
-	//fmt.Println("------")
-	//fmt.Println(r)
-	//	fmt.Println("---")
+	
 
-	outd, _ := json.Marshal(r.RequestURI)
-	//fmt.Println(string(outd))
-	accesskey:=string(outd)
+	ToGetAccessKeyFromFirstService, _ := json.Marshal(r.RequestURI)
+
+	BodyContainingAccesskey:=string(ToGetAccessKeyFromFirstService)
 	
 	
-	dd:=strings.Split(accesskey, "=")
-	//fmt.Println(dd[1])
-	d:=strings.Split(dd[1], `"`)
-	//fmt.Println(d[0])
+	AccessKeyWithDoubleQuoteAtEnd:=strings.Split(BodyContainingAccesskey, "=")
 
-fmt.Println("--")
-fmt.Println("http://localhost:10000/SecondService?access_token="+d[0])
-	Response2ndService, _ := http.Post("http://localhost:10000/SecondService?access_token="+d[0], "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+	AccessKeyToPassToSecondService:=strings.Split(AccessKeyWithDoubleQuoteAtEnd[1], `"`)
+	
+	Response2ndService, _ := http.Post("http://localhost:10000/SecondService?access_token="+AccessKeyToPassToSecondService[0], "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
 	defer Response2ndService.Body.Close()
 
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
@@ -116,6 +127,8 @@ fmt.Println("http://localhost:10000/SecondService?access_token="+d[0])
 
 	json.NewEncoder(w).Encode(string(ResponseBody))
 	},srv)).Methods("POST")
+
+
 	myRouter.HandleFunc("/SecondService", validateToken(func(w http.ResponseWriter, r *http.Request) {
 		var Output Output
 	Provider := Providers{"demo"}
@@ -142,7 +155,7 @@ fmt.Println("http://localhost:10000/SecondService?access_token="+d[0])
 
 	},srv)).Methods("POST")
 	
-	//
+
 
 	myRouter.HandleFunc("/protected", validateToken(func(w http.ResponseWriter, r *http.Request) {
       w.Write([]byte("Hello, I'm protected"))
