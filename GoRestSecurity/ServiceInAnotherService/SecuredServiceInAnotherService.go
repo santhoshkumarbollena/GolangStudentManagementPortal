@@ -64,6 +64,7 @@ func main() {
 
 	myRouter.HandleFunc("/FirstService", validateToken(func(w http.ResponseWriter, r *http.Request){
 		reqBody, _ := ioutil.ReadAll(r.Body)
+		OutputFromSecondService := Output{}
 	var Input Input
 	var Output Output
 	json.Unmarshal(reqBody, &Input)
@@ -133,8 +134,10 @@ func main() {
 	fmt.Println()
 	fmt.Println("Printing Response")
 	fmt.Println(string(ResponseBody))
-
-	json.NewEncoder(w).Encode(string(ResponseBody))
+	s:=string(ResponseBody)
+	
+    json.Unmarshal([]byte(s), &OutputFromSecondService)
+	json.NewEncoder(w).Encode(OutputFromSecondService)
 	},srv)).Methods("POST")
 
 
