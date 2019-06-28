@@ -65,6 +65,7 @@ func main() {
 	myRouter.HandleFunc("/FirstService", validateToken(func(w http.ResponseWriter, r *http.Request){
 		reqBody, _ := ioutil.ReadAll(r.Body)
 	var Input Input
+	var Output Output
 	json.Unmarshal(reqBody, &Input)
 
 	fmt.Println("1st Service")
@@ -74,35 +75,43 @@ func main() {
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
 	if(Input.RequestId==""){
-		json.NewEncoder(w).Encode(string("Error : RequestId Required Field "))
+		Output.ResponseStatus = Object{"RequestId Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.MemberId==""){
-		json.NewEncoder(w).Encode(string("Error : MemberId Required Field "))
+		Output.ResponseStatus = Object{"MemberId Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.MemberIdType==""){
-		json.NewEncoder(w).Encode(string("Error : MemberIdType Required Field "))
+		Output.ResponseStatus = Object{"MemberIdType Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.ReferedToSpecialtyCategory==""){
-		json.NewEncoder(w).Encode(string("Error : ReferedToSpecialtyCategory Required Field "))
+		Output.ResponseStatus = Object{"ReferedToSpecialtyCategory Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(len(Input.ProviderIds)==0){
-		json.NewEncoder(w).Encode(string("Error : ProviderIds Required Field "))
+		Output.ResponseStatus = Object{"ProviderIds Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.SearchFilterCriteria==""){
-		json.NewEncoder(w).Encode(string("Error : SearchFilterCriteria Required Field "))
+		Output.ResponseStatus = Object{"SearchFilterCriteria Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.CallingApp==""){
-		json.NewEncoder(w).Encode(string("Error : CallingApp Required Field "))
+		Output.ResponseStatus = Object{"CallingApp Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.CallingAppType==""){
-		json.NewEncoder(w).Encode(string("Error : CallingAppType Required Field "))
+		Output.ResponseStatus = Object{"CallingAppType Field Required"}
+		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
@@ -157,9 +166,7 @@ func main() {
 	
 
 
-	myRouter.HandleFunc("/protected", validateToken(func(w http.ResponseWriter, r *http.Request) {
-      w.Write([]byte("Hello, I'm protected"))
-   }, srv))
+	
 
    log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
