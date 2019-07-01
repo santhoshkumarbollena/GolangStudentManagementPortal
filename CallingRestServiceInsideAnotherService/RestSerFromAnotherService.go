@@ -55,7 +55,9 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(string(body))
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
+	OutputFromSecondService := Output{}
 	var Input Input
+	var Output Output
 	json.Unmarshal(reqBody, &Input)
 
 	fmt.Println("1st Service")
@@ -64,6 +66,46 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
+	if(Input.RequestId==""){
+		Output.ResponseStatus = Object{"RequestId Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.MemberId==""){
+		Output.ResponseStatus = Object{"MemberId Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.MemberIdType==""){
+		Output.ResponseStatus = Object{"MemberIdType Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.ReferedToSpecialtyCategory==""){
+		Output.ResponseStatus = Object{"ReferedToSpecialtyCategory Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(len(Input.ProviderIds)==0){
+		Output.ResponseStatus = Object{"ProviderIds Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.SearchFilterCriteria==""){
+		Output.ResponseStatus = Object{"SearchFilterCriteria Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.CallingApp==""){
+		Output.ResponseStatus = Object{"CallingApp Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
+	if(Input.CallingAppType==""){
+		Output.ResponseStatus = Object{"CallingAppType Field Required"}
+		json.NewEncoder(w).Encode((Output))
+		return
+	}
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
 
 	Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
@@ -73,8 +115,10 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	fmt.Println()
 	fmt.Println("Printing Response")
 	fmt.Println(string(ResponseBody))
-
-	json.NewEncoder(w).Encode(string(ResponseBody))
+	s:=string(ResponseBody)
+	
+	json.Unmarshal([]byte(s), &OutputFromSecondService)
+	json.NewEncoder(w).Encode(OutputFromSecondService)
 }
 func SecondService(w http.ResponseWriter, r *http.Request) {
 	var Output Output

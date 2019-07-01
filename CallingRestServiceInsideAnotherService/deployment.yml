@@ -1,0 +1,33 @@
+---
+kind: Service
+apiVersion : v1
+metadata:
+  name: go-rest-service
+spec:
+  selector:
+    app: myapp
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8080
+    nodePort: 30003
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: go-rest-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: load-balancer-example
+        app: myapp
+
+    spec:
+      containers:
+      - name: myapp
+        image: docker-go-rest:latest
+        ports:
+        - containerPort: 8010
