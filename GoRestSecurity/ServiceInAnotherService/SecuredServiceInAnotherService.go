@@ -75,43 +75,44 @@ func main() {
 	fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
+	
 	if(Input.RequestId==""){
-		Output.ResponseStatus = Object{"RequestId Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no RequestId | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.MemberId==""){
-		Output.ResponseStatus = Object{"MemberId Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no MemberId | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.MemberIdType==""){
-		Output.ResponseStatus = Object{"MemberIdType Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no MemberIdType | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.ReferedToSpecialtyCategory==""){
-		Output.ResponseStatus = Object{"ReferedToSpecialtyCategory Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no ReferedToSpecialtyCategory | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(len(Input.ProviderIds)==0){
-		Output.ResponseStatus = Object{"ProviderIds Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no ProviderIds | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.SearchFilterCriteria==""){
-		Output.ResponseStatus = Object{"SearchFilterCriteria Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no SearchFilterCriteria | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.CallingApp==""){
-		Output.ResponseStatus = Object{"CallingApp Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no CallingApp | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.CallingAppType==""){
-		Output.ResponseStatus = Object{"CallingAppType Field Required"}
+		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no CallingAppType | Passed"}
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
@@ -142,26 +143,27 @@ func main() {
 
 
 	myRouter.HandleFunc("/SecondService", validateToken(func(w http.ResponseWriter, r *http.Request) {
-		var Output Output
-	Provider := Providers{"demo"}
-	var Providers []Providers
+	var Output Output
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var Input Input
 	json.Unmarshal(reqBody, &Input)
-	Providers = append(Providers, Provider)
+	
 	fmt.Println()
 	fmt.Println("2nd Service")
 	fmt.Println()
 	fmt.Println(Input)
 	fmt.Println()
 	//Setting output values in service 2
-	Output.ResponseId = "responseid"
-	Output.Providers = Providers
-	Output.NPI = "NPI"
-	Output.Ranking = "Ranking"
-	Output.ResponseStatus = Object{"ObjectValueValue"}
-	Output.StatusCode = "StatusCode"
-	Output.StatusMessage = "StatusMessage"
+	Output.ResponseId = "1231"
+	Provider := Providers{"key1","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
 
 	json.NewEncoder(w).Encode(Output)
 
@@ -200,17 +202,17 @@ type Input struct {
 	CallingAppType                string   `json:"callingAppType"`
 }
 type Providers struct {
-	ProviderDemoValue string
+	NPI            string      
+	Ranking        string   
 }
 type Object struct {
-	ObjectDemoValue string
+	StatusCode     string     
+	StatusMessage  string 
 }
 type Output struct {
 	ResponseId     string      `json:"responseId"`
 	Providers      []Providers `json:"providers"`
-	NPI            string      `json:"NPI"`
-	Ranking        string      `json:"ranking"`
+	  
 	ResponseStatus Object      `json:"responseStatus"`
-	StatusCode     string      `json:"statusCode"`
-	StatusMessage  string      `json:"statusMessage"`
+    
 }
