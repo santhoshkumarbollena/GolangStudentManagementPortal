@@ -2,7 +2,7 @@
 kind: Service
 apiVersion : v1
 metadata:
-  name: go-rest-service
+  name: go-rest-service-v1
 spec:
   selector:
     app: myapp
@@ -16,7 +16,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: go-rest-deployment
+  name: go-rest-deployment-v1
 spec:
   replicas: 2
   template:
@@ -28,6 +28,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: docker-go-rest:latest
+        image: santhoshkumarbollena/docker-go-rest:v1
         ports:
         - containerPort: 8010
