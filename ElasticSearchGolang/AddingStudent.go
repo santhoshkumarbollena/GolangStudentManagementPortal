@@ -21,7 +21,7 @@ type Student struct{
 func main() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
-	myRouter.HandleFunc("/AddStudent/{key}", AddStudent)
+	myRouter.HandleFunc("/AddStudent/{key}", AddStudent).method("PUT");
 	log.Fatal(http.ListenAndServe(":1022", myRouter))
 
 }
