@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bytes"
+	
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-
+	
 	"github.com/gorilla/mux"
 )
 
@@ -18,6 +18,9 @@ func main() {
 	myRouter.HandleFunc("/SecondService", SecondService).Methods("POST")
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 
+}
+func CallingServices(){
+	
 }
 
 type Input struct {
@@ -107,18 +110,20 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
-	RequestBodyFor2ndService, _ := json.Marshal(Input)
 
-	Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
-	defer Response2ndService.Body.Close()
+	// RequestBodyFor2ndService, _ := json.Marshal(Input)
 
-	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
-	fmt.Println()
-	fmt.Println("Printing Response")
-	fmt.Println(string(ResponseBody))
-	s:=string(ResponseBody)
+	// Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+	// defer Response2ndService.Body.Close()
+
+	// ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+	// fmt.Println()
+	// fmt.Println("Printing Response")
+	// fmt.Println(string(ResponseBody))
+	// s:=string(ResponseBody)
 	
-	json.Unmarshal([]byte(s), &OutputFromSecondService)
+	// json.Unmarshal([]byte(s), &OutputFromSecondService)
+	
 	json.NewEncoder(w).Encode(OutputFromSecondService)
 }
 func SecondService(w http.ResponseWriter, r *http.Request) {
