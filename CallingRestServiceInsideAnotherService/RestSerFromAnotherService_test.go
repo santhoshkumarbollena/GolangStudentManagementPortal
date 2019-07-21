@@ -32,19 +32,19 @@ func TestFirstService(t *testing.T) {
 	handler := http.HandlerFunc(FirstService)
 	handler.ServeHTTP(rr, req)
 //second service test cse
-	// req, err = http.NewRequest("POST", "/SecondService", bytes.NewBuffer(jsonStr))
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// req.Header.Set("Content-Type", "application/json")
-	// rr = httptest.NewRecorder()
-	// handler = http.HandlerFunc(SecondService)
-	// handler.ServeHTTP(rr, req)
+	req, err = http.NewRequest("POST", "/SecondService", bytes.NewBuffer(jsonStr))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	rr = httptest.NewRecorder()
+	handler = http.HandlerFunc(SecondService)
+	handler.ServeHTTP(rr, req)
 
-	// if status := rr.Code; status != http.StatusOK {
-	// 	t.Errorf("handler status returned wrong status code: got %v want %v",
-	// 		status, http.StatusOK)
-	// }
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler status returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
 	expected := `{"responseId":"1231","providers":[{"NPI":"key1","Ranking":"1"},{"NPI":"key2","Ranking":"2"}],"responseStatus":{"StatusCode":"200","StatusMessage":"sucess"}}`
 	
 	
