@@ -1,0 +1,12 @@
+Put request to
+
+http://localhost:1022/AddStudent/key
+
+body:
+{
+  "Id" : "string json",
+	"Name" : "str",
+	"Age" : "string ",
+	"Country" : "string",
+	"Email" : "stri"
+}
