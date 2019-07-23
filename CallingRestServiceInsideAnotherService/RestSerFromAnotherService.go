@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	
+	"bytes"
 	"github.com/gorilla/mux"
 )
 
@@ -69,7 +69,7 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
-
+	fmt.Println("here1")
 	if(Input.RequestId==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no RequestId | Passed"}
 		json.NewEncoder(w).Encode((Output))
@@ -110,19 +110,20 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
-
-	// RequestBodyFor2ndService, _ := json.Marshal(Input)
-
-	// Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
-	// defer Response2ndService.Body.Close()
-
-	// ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
-	// fmt.Println()
-	// fmt.Println("Printing Response")
-	// fmt.Println(string(ResponseBody))
-	// s:=string(ResponseBody)
-	
-	// json.Unmarshal([]byte(s), &OutputFromSecondService)
+fmt.Println("here2")
+	RequestBodyFor2ndService, _ := json.Marshal(Input)
+fmt.Println(string(RequestBodyFor2ndService))
+	Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+	fmt.Println(Response2ndService)
+	defer Response2ndService.Body.Close()
+	fmt.Println("here4")
+	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+	fmt.Println()
+	fmt.Println("Printing Response")
+	fmt.Println(string(ResponseBody))
+	s:=string(ResponseBody)
+	fmt.Println("here5")
+	json.Unmarshal([]byte(s), &OutputFromSecondService)
 	
 	json.NewEncoder(w).Encode(OutputFromSecondService)
 }
