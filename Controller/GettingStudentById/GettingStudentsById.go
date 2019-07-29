@@ -39,3 +39,5 @@ func ReturnAStudent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: GetStudentsById")
 	json.NewEncoder(w).Encode(Students)
 }
+
+
