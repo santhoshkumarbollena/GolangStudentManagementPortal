@@ -1,0 +1,14 @@
+https://jmeter.apache.org/download_jmeter.cgi
+
+scroll down to binaries
+:
+click on
+
+apache-jmeter-5.1.1.zip
+
+this will download jmeter
+
+extract the file
+
+go to bin: double click on jmeter (type :application)
+dont close the terminal opened by it.jmeter will run its server on this terminal
