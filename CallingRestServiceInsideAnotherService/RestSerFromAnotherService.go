@@ -6,17 +6,50 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"sync"
+	// "os"
+	"io"
 	"net/http"
 	"bytes"
 	"github.com/gorilla/mux"
+	"time"
+	"gopkg.in/yaml.v2"
 )
+var ApplicationLogs[] string
+
+var data string
+type T struct {
+	PortNumber string
+
+}
+func readData() {
+	b, err := ioutil.ReadFile("Properties.yaml") // just pass the file name
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	data = string(b) // convert content to a 'string'
+
+}
 
 func main() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
 	myRouter.HandleFunc("/FirstService", FirstService).Methods("POST")
 	myRouter.HandleFunc("/SecondService", SecondService).Methods("POST")
-	log.Fatal(http.ListenAndServe(":10000", myRouter))
+	readData()
+
+	m := make(map[string]string)
+
+	err := yaml.Unmarshal([]byte(data), &m)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	//Assigning Properties data into a map
+	fmt.Printf("--- m:\n%v\n\n", m)
+	fmt.Println(m["portNumber"])
+
+	log.Fatal(http.ListenAndServe(m["portNumber"], myRouter))
 
 }
 func CallingServices(){
@@ -50,26 +83,55 @@ type Output struct {
 	ResponseStatus Object      `json:"responseStatus"`
     
 }
+type Logger struct {
+	mu     sync.Mutex // ensures atomic writes; protects the following fields
+	prefix string     // prefix to write at beginning of each line
+	flag   int        // properties
+	out    io.Writer  // destination for output
+	buf    []byte     // for accumulating text to write
+}
+var ApplicationLogs12[] string
 
 func FirstService(w http.ResponseWriter, r *http.Request) {
 	// resp, _ := http.Get("http://localhost:10000/GetAllEmployes")
 	// defer resp.Body.Close()
 	// body, _ := ioutil.ReadAll(resp.Body)
 	// fmt.Println(string(body))
-
+	DateTimeInMilliseconds := time.Now()
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	OutputFromSecondService := Output{}
 	var Input Input
 	var Output Output
 	json.Unmarshal(reqBody, &Input)
+	
+	
+	
+	// f, err := os.OpenFile("logs.txt",  os.O_CREATE | os.O_RDWR, 0666)
+    //     if err != nil {
+    //         fmt.Printf("error opening file: %v", err)
+    //     }
 
-	fmt.Println("1st Service")
-	fmt.Println()
-	fmt.Println(Input)
-	fmt.Println()
+    //     // don't forget to close it
+    //     defer f.Close()
+
+    //     // assign it to the standard logger
+    //     log.SetOutput(f)
+
+	// 	log.Output(1, "this is an event")
+		
+		
+		Log1:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+" 1st Service"
+		ApplicationLogs12 =append(ApplicationLogs12,Log1)
+		//fmt.Println(t.Format("2006-01-02 15:04:05.0000")+" 1st Service")
+		//fmt.Println(demo2)
+		// demo2,_:=fmt.Println("1st Service")
+		// fmt.Println(demo1+demo2)
+	// var l *Logger
+	// l=log.Print(Input)
+	//fmt.Println()
 	//fmt.Println(Students)
 	//fmt.Println(string(reqBody))
-	fmt.Println("here1")
+	//fmt.Println("here1")
 	if(Input.RequestId==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no RequestId | Passed"}
 		json.NewEncoder(w).Encode((Output))
@@ -110,34 +172,60 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
-fmt.Println("here2")
+//fmt.Println("here2")
 	RequestBodyFor2ndService, _ := json.Marshal(Input)
-fmt.Println(string(RequestBodyFor2ndService))
+	Log2:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+string(RequestBodyFor2ndService)
+		ApplicationLogs12 =append(ApplicationLogs12,Log2)
+	//log.Println(string(RequestBodyFor2ndService))
 	Response2ndService, _ := http.Post("http://localhost:10000/SecondService", "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
-	fmt.Println(Response2ndService)
+	
 	defer Response2ndService.Body.Close()
-	fmt.Println("here4")
+	//fmt.Println("here4")
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+	//fmt.Println()
+	Log5:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+"Printing Response"
+	ApplicationLogs12 =append(ApplicationLogs12,Log5)
+	//log.Println("Printing Response")
+
+	
+	Log6:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+string(ResponseBody)
+	ApplicationLogs12 =append(ApplicationLogs12,Log6)
+	//log.Println(string(ResponseBody))
+	//log.Printf(string(ResponseBody))
+	
 	fmt.Println()
-	fmt.Println("Printing Response")
-	fmt.Println(string(ResponseBody))
+	//fmt.Println(tim)
+	fmt.Println(ApplicationLogs12)
+	//fmt.Println(log.Println(string(ResponseBody)))
 	s:=string(ResponseBody)
-	fmt.Println("here5")
+	//fmt.Println("here5")
 	json.Unmarshal([]byte(s), &OutputFromSecondService)
 	
 	json.NewEncoder(w).Encode(OutputFromSecondService)
+	fmt.Println("after")
 }
 func SecondService(w http.ResponseWriter, r *http.Request) {
+	DateTimeInMilliseconds := time.Now()
 	var Output Output
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var Input Input
 	json.Unmarshal(reqBody, &Input)
 	
-	fmt.Println()
-	fmt.Println("2nd Service")
-	fmt.Println()
-	fmt.Println(Input)
-	fmt.Println()
+	//fmt.Println()
+	Log3:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+"2nd Service"
+		ApplicationLogs12 =append(ApplicationLogs12,Log3)
+	//log.Println("2nd Service")
+	//fmt.Println()
+	//COnverting Input member tpe to string
+	out, err := json.Marshal(Input)
+	if err != nil {
+		panic(err)
+	}
+	value := string(out)
+	Log4:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+string(value)
+	ApplicationLogs12 =append(ApplicationLogs12,Log4)
+	//log.Println(Input)
+	//fmt.Println()
 	//Setting output values in service 2
 	Output.ResponseId = "1231"
 	Provider := Providers{"key1","1"}
