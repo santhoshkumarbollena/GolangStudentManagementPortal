@@ -1,0 +1,545 @@
+Uploading Docker Image to Azure From local docker Images.
+
+Login to Azure
+click on create a Resource
+In Search search for Container Registry
+click create
+Registry name would be the name of the Image .It can be anything related to Docker Image.
+Resource group should be created by clicking create new ,if you dont have any group to select.
+click create
+It will be deplyoed.It might be taking some time.
+After deplyoed succesfully you are going to get a notification.
+
+Goto All Resources.
+There you can see the registry that you have created.
+Click on that Registry
+You can find Access Keys button,Click on that button.
+If the Admin User is Disabled you have to Enable it.
+Copy the login Server Input box.
+
+Open a terminal and login through this login Server
+example : docker login NAMEOFREGISTRY.azurecr.io(You can find this in login server)
+Then it will be asking for username and password
+username: NAMEOFREGISTRY
+password :
+password will be displayed in the Access key page if you enable the Admin user.
+
+
+Tag the existing image in the following manner
+docker tag pranaybollena/go-rest-api:v1 gorestapi.azurecr.io/go-rest-api
+
+
+Push the docker image into Azure cloud
+docker push gorestapi.azurecr.io/go-rest-api
+
+Uploading the docker Images from Docker Hub to Azure Cloud.
+
+
+
+In Azure Search for Azure Active directories
+go to properties
+copy the directory id:
+acb4040d-82c7-4345-88a2-46ad7ee44785
+
+directory id will be the tenent id:
+acb4040d-82c7-4345-88a2-46ad7ee44785
+To get client id and client secret:
+click on app registrations 
+create a new registrations
+example : name :Postman
+url : http://localhost
+create
+then the application id will be the client id:
+515ff759-f77d-462c-b202-5e1654f867cf
+
+Click on Certificates and keys:
+click on create new secret key
+copy that key
+xt@IIFG[44p.3tjTs:WDckTV8]acIAXl
+
+goto your container in azure
+click on Accesscontrol
+click on add
+add the postman that we have prviously designed
+
+goto subscription:
+copy subscription id:
+b6017d54-cbee-4e13-983d-3bdf3c02631a
+
+
+
+=====================================================================
+
+
+az container create \
+  --resource-group learn-deploy-aci-rg \
+  --name mycontainer \
+  --image go-rest-api \
+  --ports 80 \
+  --dns-name-label $DNS_NAME_LABEL \
+  --location eastus
+
+az acr repository list --name gorestapi --output table
+
+az acr show --name gorestapi --query loginServer
+
+az container create -g Docker --name myapp --image gorestapi --cpu 1 --memory 1
+
+az container create -g MyResourceGroup --name myapp --image myimage:latest --ports 80 443 --dns-name-label contoso
+
+
+
+
+
+
+
+az group create --name Docker --location "westus"
+
+az acr create -n gorestapi -g Docker --sku Standard
+
+az acr create --name gorestapi --resource-group Docker --sku Basic --admin-enabled true
+
+
+az acr credential show --name gorestapi
+
+
+{
+  "passwords": [
+    {
+      "name": "password",
+      "value": "hX6Rra6Icw96Phv2UrHEdlOAd+QAE5Yl"
+    },
+    {
+      "name": "password2",
+      "value": "aY64lETEsAGOWg8GVN2bEea80r+/UvAe"
+    }
+  ],
+  "username": "gorestapi"
+}
+
+
+
+docker login <azure-container-registry-name>.azurecr.io --username <registry-username>
+
+
+az acr repository list -n gorestapi
+
+"go-rest-api"
+
+
+az appservice plan create --name ServicePlanDocker --resource-group Docker --sku B1 --is-linux
+
+{
+  "freeOfferExpirationTime": "2019-09-24T06:33:10.333333",
+  "geoRegion": "West US",
+  "hostingEnvironmentProfile": null,
+  "hyperV": false,
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/Docker/providers/Microsoft.Web/serverfarms/ServicePlanDocker",
+  "isSpot": false,
+  "isXenon": false,
+  "kind": "linux",
+  "location": "West US",
+  "maximumElasticWorkerCount": 1,
+  "maximumNumberOfWorkers": 3,
+  "name": "ServicePlanDocker",
+  "numberOfSites": 0,
+  "perSiteScaling": false,
+  "provisioningState": "Succeeded",
+  "reserved": true,
+  "resourceGroup": "Docker",
+  "sku": {
+    "capabilities": null,
+    "capacity": 1,
+    "family": "B",
+    "locations": null,
+    "name": "B1",
+    "size": "B1",
+    "skuCapacity": null,
+    "tier": "Basic"
+  },
+  "spotExpirationTime": null,
+  "status": "Ready",
+  "subscription": "b6017d54-cbee-4e13-983d-3bdf3c02631a",
+  "tags": null,
+  "targetWorkerCount": 0,
+  "targetWorkerSizeId": 0,
+  "type": "Microsoft.Web/serverfarms",
+  "workerTierName": null
+}
+
+
+az webapp create --resource-group Docker --plan ServicePlanDocker --name restinrestgo --deployment-container-image-name gorestapi.azurecr.io/go-rest-api
+
+
+{
+  "availabilityState": "Normal",
+  "clientAffinityEnabled": true,
+  "clientCertEnabled": false,
+  "clientCertExclusionPaths": null,
+  "cloningInfo": null,
+  "containerSize": 0,
+  "dailyMemoryTimeQuota": 0,
+  "defaultHostName": "restinrestgo.azurewebsites.net",
+  "enabled": true,
+  "enabledHostNames": [
+    "restinrestgo.azurewebsites.net",
+    "restinrestgo.scm.azurewebsites.net"
+  ],
+  "ftpPublishingUrl": "ftp://waws-prod-bay-081.ftp.azurewebsites.windows.net/site/wwwroot",
+  "geoDistributions": null,
+  "hostNameSslStates": [
+    {
+      "hostType": "Standard",
+      "ipBasedSslResult": null,
+      "ipBasedSslState": "NotConfigured",
+      "name": "restinrestgo.azurewebsites.net",
+      "sslState": "Disabled",
+      "thumbprint": null,
+      "toUpdate": null,
+      "toUpdateIpBasedSsl": null,
+      "virtualIp": null
+    },
+    {
+      "hostType": "Repository",
+      "ipBasedSslResult": null,
+      "ipBasedSslState": "NotConfigured",
+      "name": "restinrestgo.scm.azurewebsites.net",
+      "sslState": "Disabled",
+      "thumbprint": null,
+      "toUpdate": null,
+      "toUpdateIpBasedSsl": null,
+      "virtualIp": null
+    }
+  ],
+  "hostNames": [
+    "restinrestgo.azurewebsites.net"
+  ],
+  "hostNamesDisabled": false,
+  "hostingEnvironmentProfile": null,
+  "httpsOnly": false,
+  "hyperV": false,
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/Docker/providers/Microsoft.Web/sites/restinrestgo",
+  "identity": null,
+  "inProgressOperationId": null,
+  "isDefaultContainer": null,
+  "isXenon": false,
+  "kind": "app,linux,container",
+  "lastModifiedTimeUtc": "2019-08-25T06:36:46.060000",
+  "location": "West US",
+  "maxNumberOfWorkers": null,
+  "name": "restinrestgo",
+  "outboundIpAddresses": "13.64.73.110,40.118.133.8,40.118.169.141,40.118.253.162,13.64.147.140",
+  "possibleOutboundIpAddresses": "13.64.73.110,40.118.133.8,40.118.169.141,40.118.253.162,13.64.147.140,52.160.85.217,13.93.238.69",
+  "redundancyMode": "None",
+  "repositorySiteName": "restinrestgo",
+  "reserved": true,
+  "resourceGroup": "Docker",
+  "scmSiteAlsoStopped": false,
+  "serverFarmId": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/Docker/providers/Microsoft.Web/serverfarms/ServicePlanDocker",
+  "siteConfig": null,
+  "slotSwapStatus": null,
+  "state": "Running",
+  "suspendedTill": null,
+  "tags": null,
+  "targetSwapSlot": null,
+  "trafficManagerHostNames": null,
+  "type": "Microsoft.Web/sites",
+  "usageState": "Normal"
+}
+
+
+
+
+az webapp config container set --name restinrestgo --resource-group Docker --docker-custom-image-name gorestapi.azurecr.io/go-rest-api --docker-registry-server-url https://gorestapi.azurecr.io --docker-registry-server-user go-rest-api --docker-registry-server-password hX6Rra6Icw96Phv2UrHEdlOAd+QAE5Yl
+
+[
+  {
+    "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+    "slotSetting": false,
+    "value": "false"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_URL",
+    "slotSetting": false,
+    "value": "https://gorestapi.azurecr.io"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+    "slotSetting": false,
+    "value": "go-rest-api"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+    "slotSetting": false,
+    "value": null
+  },
+  {
+    "name": "DOCKER_CUSTOM_IMAGE_NAME",
+    "value": "DOCKER|gorestapi.azurecr.io/go-rest-api"
+  }
+]
+
+
+
+az webapp config appsettings set --resource-group Docker --name restinrestgo --settings WEBSITES_PORT=8000
+
+[
+  {
+    "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+    "slotSetting": false,
+    "value": "false"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_URL",
+    "slotSetting": false,
+    "value": "https://gorestapi.azurecr.io"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+    "slotSetting": false,
+    "value": "go-rest-api"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+    "slotSetting": false,
+    "value": null
+  },
+  {
+    "name": "WEBSITES_PORT",
+    "slotSetting": false,
+    "value": "8000"
+  }
+]
+
+
+
+
+ az group create --name myResourceGroup --location "westus"
+{
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/myResourceGroup",
+  "location": "westus",
+  "managedBy": null,
+  "name": "myResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": null
+}
+
+
+
+
+az acr create -n MyRegistrygorest -g MyResourceGroup --sku Standard
+{
+  "adminUserEnabled": false,
+  "creationDate": "2019-08-25T19:40:18.568094+00:00",
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerRegistry/registries/MyRegistrygorest",
+  "location": "westus",
+  "loginServer": "myregistrygorest.azurecr.io",
+  "name": "MyRegistrygorest",
+  "networkRuleSet": null,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "MyResourceGroup",
+  "sku": {
+    "name": "Standard",
+    "tier": "Standard"
+  },
+  "status": null,
+  "storageAccount": null,
+  "tags": {},
+  "type": "Microsoft.ContainerRegistry/registries"
+}
+
+
+ az acr credential show --name MyRegistrygorest
+{
+  "passwords": [
+    {
+      "name": "password",
+      "value": "zrToXRLo2xrjwv0Eekbcn=9aasaY7gGF"
+    },
+    {
+      "name": "password2",
+      "value": "Hip0Fg7NvZk3vSh9qH/82yeJGAyrr9FL"
+    }
+  ],
+  "username": "MyRegistrygorest"
+}
+
+ docker login MyRegistrygorest.azurecr.io --username MyRegistrygorest
+Password: 
+Login Succeeded
+
+
+docker tag gorestapipost MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0
+
+docker push MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0
+
+
+
+az acr repository list -n MyRegistrygorest
+[
+  "gorestapipost"
+]
+
+
+
+
+ az appservice plan create --name myAppServicePlan --resource-group myResourceGroup --sku B1 --is-linux
+{
+  "freeOfferExpirationTime": "2019-09-24T19:49:19.356666",
+  "geoRegion": "West US",
+  "hostingEnvironmentProfile": null,
+  "hyperV": false,
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/myResourceGroup/providers/Microsoft.Web/serverfarms/myAppServicePlan",
+  "isSpot": false,
+  "isXenon": false,
+  "kind": "linux",
+  "location": "West US",
+  "maximumElasticWorkerCount": 1,
+  "maximumNumberOfWorkers": 3,
+  "name": "myAppServicePlan",
+  "numberOfSites": 0,
+  "perSiteScaling": false,
+  "provisioningState": "Succeeded",
+  "reserved": true,
+  "resourceGroup": "myResourceGroup",
+  "sku": {
+    "capabilities": null,
+    "capacity": 1,
+    "family": "B",
+    "locations": null,
+    "name": "B1",
+    "size": "B1",
+    "skuCapacity": null,
+    "tier": "Basic"
+  },
+  "spotExpirationTime": null,
+  "status": "Ready",
+  "subscription": "b6017d54-cbee-4e13-983d-3bdf3c02631a",
+  "tags": null,
+  "targetWorkerCount": 0,
+  "targetWorkerSizeId": 0,
+  "type": "Microsoft.Web/serverfarms",
+  "workerTierName": null
+}
+
+
+az webapp create --resource-group myResourceGroup --plan myAppServicePlan --name gorestpostapi --deployment-container-image-name MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0
+
+
+$ az webapp create --resource-group myResourceGroup --plan myAppServicePlan --name gorestpostapi --deployment-container-image-name MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0
+{
+  "availabilityState": "Normal",
+  "clientAffinityEnabled": true,
+  "clientCertEnabled": false,
+  "clientCertExclusionPaths": null,
+  "cloningInfo": null,
+  "containerSize": 0,
+  "dailyMemoryTimeQuota": 0,
+  "defaultHostName": "gorestpostapi.azurewebsites.net",
+  "enabled": true,
+  "enabledHostNames": [
+    "gorestpostapi.azurewebsites.net",
+    "gorestpostapi.scm.azurewebsites.net"
+  ],
+  "ftpPublishingUrl": "ftp://waws-prod-bay-081.ftp.azurewebsites.windows.net/site/wwwroot",
+  "geoDistributions": null,
+  "hostNameSslStates": [
+    {
+      "hostType": "Standard",
+      "ipBasedSslResult": null,
+      "ipBasedSslState": "NotConfigured",
+      "name": "gorestpostapi.azurewebsites.net",
+      "sslState": "Disabled",
+      "thumbprint": null,
+      "toUpdate": null,
+      "toUpdateIpBasedSsl": null,
+      "virtualIp": null
+    },
+    {
+      "hostType": "Repository",
+      "ipBasedSslResult": null,
+      "ipBasedSslState": "NotConfigured",
+      "name": "gorestpostapi.scm.azurewebsites.net",
+      "sslState": "Disabled",
+      "thumbprint": null,
+      "toUpdate": null,
+      "toUpdateIpBasedSsl": null,
+      "virtualIp": null
+    }
+  ],
+  "hostNames": [
+    "gorestpostapi.azurewebsites.net"
+  ],
+  "hostNamesDisabled": false,
+  "hostingEnvironmentProfile": null,
+  "httpsOnly": false,
+  "hyperV": false,
+  "id": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/myResourceGroup/providers/Microsoft.Web/sites/gorestpostapi",
+  "identity": null,
+  "inProgressOperationId": null,
+  "isDefaultContainer": null,
+  "isXenon": false,
+  "kind": "app,linux,container",
+  "lastModifiedTimeUtc": "2019-08-25T19:51:00.583333",
+  "location": "West US",
+  "maxNumberOfWorkers": null,
+  "name": "gorestpostapi",
+  "outboundIpAddresses": "13.64.73.110,40.118.133.8,40.118.169.141,40.118.253.162,13.64.147.140",
+  "possibleOutboundIpAddresses": "13.64.73.110,40.118.133.8,40.118.169.141,40.118.253.162,13.64.147.140,52.160.85.217,13.93.238.69",
+  "redundancyMode": "None",
+  "repositorySiteName": "gorestpostapi",
+  "reserved": true,
+  "resourceGroup": "myResourceGroup",
+  "scmSiteAlsoStopped": false,
+  "serverFarmId": "/subscriptions/b6017d54-cbee-4e13-983d-3bdf3c02631a/resourceGroups/myResourceGroup/providers/Microsoft.Web/serverfarms/myAppServicePlan",
+  "siteConfig": null,
+  "slotSwapStatus": null,
+  "state": "Running",
+  "suspendedTill": null,
+  "tags": null,
+  "targetSwapSlot": null,
+  "trafficManagerHostNames": null,
+  "type": "Microsoft.Web/sites",
+  "usageState": "Normal"
+}
+
+
+
+
+az webapp config container set --name gorestpostapi --resource-group myResourceGroup --docker-custom-image-name MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0 --docker-registry-server-url https://MyRegistrygorest.azurecr.io --docker-registry-server-user MyRegistrygorest --docker-registry-server-password zrToXRLo2xrjwv0Eekbcn=9aasaY7gGF
+
+$ az webapp config container set --name gorestpostapi --resource-group myResourceGroup --docker-custom-image-name MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0 --docker-registry-server-url https://MyRegistrygorest.azurecr.io --docker-registry-server-user MyRegistrygorest --docker-registry-server-password zrToXRLo2xrjwv0Eekbcn=9aasaY7gGF
+[
+  {
+    "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+    "slotSetting": false,
+    "value": "false"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_URL",
+    "slotSetting": false,
+    "value": "https://MyRegistrygorest.azurecr.io"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+    "slotSetting": false,
+    "value": "MyRegistrygorest"
+  },
+  {
+    "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+    "slotSetting": false,
+    "value": null
+  },
+  {
+    "name": "DOCKER_CUSTOM_IMAGE_NAME",
+    "value": "DOCKER|MyRegistrygorest.azurecr.io/gorestapipost:v1.0.0"
+  }
+]
+
+
+
+az webapp config appsettings set --resource-group myResourceGroup --name gorestpostapi --settings WEBSITES_PORT=10000
+
