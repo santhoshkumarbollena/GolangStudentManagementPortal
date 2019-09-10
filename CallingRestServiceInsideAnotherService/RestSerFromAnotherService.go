@@ -210,7 +210,8 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var Input Input
 	json.Unmarshal(reqBody, &Input)
-	
+	fmt.Println("----------")
+	fmt.Println(Input.RequestId)
 	//fmt.Println()
 	Log3:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+"2nd Service"
 		ApplicationLogs12 =append(ApplicationLogs12,Log3)
@@ -227,7 +228,9 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	//log.Println(Input)
 	//fmt.Println()
 	//Setting output values in service 2
-	Output.ResponseId = "1231"
+
+	if Input.RequestId=="" {
+		Output.ResponseId = Input.RequestId
 	Provider := Providers{"key1","1"}
 	//Object := Object{"Response Code","Response Status"}
 	var ProvidersList []Providers
@@ -237,6 +240,56 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	Output.Providers = ProvidersList
 	
 	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+	
+	} else if Input.RequestId=="" {
+		Output.ResponseId = Input.RequestId
+	Provider := Providers{"key1","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+
+	} else if(Input.RequestId==""){
+		Output.ResponseId = Input.RequestId
+	Provider := Providers{"key1","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+
+	} else if(Input.RequestId==""){
+		Output.ResponseId = Input.RequestId
+	Provider := Providers{"key1","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+
+	} else{
+		Output.ResponseId = Input.RequestId
+	Provider := Providers{"key1","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+	}
+	
 
 
 	json.NewEncoder(w).Encode(Output)
