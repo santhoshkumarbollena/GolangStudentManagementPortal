@@ -134,42 +134,58 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("here1")
 	if(Input.RequestId==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no RequestId | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
+		//w.Write([]byte("500 - Something bad happened!"))
 		json.NewEncoder(w).Encode((Output))
 		return
 	}
 	if(Input.MemberId==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:"Error no MemberId | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(Input.MemberIdType==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no MemberIdType | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(Input.ReferedToSpecialtyCategory==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no ReferedToSpecialtyCategory | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(len(Input.ProviderIds)==0){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no ProviderIds | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(Input.SearchFilterCriteria==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no SearchFilterCriteria | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(Input.CallingApp==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no CallingApp | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 	if(Input.CallingAppType==""){
 		Output.ResponseStatus = Object{StatusCode:"901",StatusMessage:" Error no CallingAppType | Passed"}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode((Output))
+		
 		return
 	}
 //fmt.Println("here2")
