@@ -7,7 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"sync"
-	
+	"strings"
+	"strconv"
 	"io"
 	"net/http"
 	"bytes"
@@ -198,6 +199,7 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	defer Response2ndService.Body.Close()
 	//fmt.Println("here4")
 	ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+	
 	//fmt.Println()
 	Log5:=DateTimeInMilliseconds.Format("2006-01-02 15:04:05.0000")+"Printing Response"
 	ApplicationLogs12 =append(ApplicationLogs12,Log5)
@@ -216,7 +218,13 @@ func FirstService(w http.ResponseWriter, r *http.Request) {
 	s:=string(ResponseBody)
 	//fmt.Println("here5")
 	json.Unmarshal([]byte(s), &OutputFromSecondService)
-	
+	ResponseStatusStirng:=Response2ndService.Status
+	ResponseStatusInt:=strings.Split(ResponseStatusStirng, " ")
+	integerforResponseStatus, err := strconv.Atoi(ResponseStatusInt[0])
+	if(err!=nil){
+		fmt.Println("could not Parse the response string")
+	}
+	w.WriteHeader(integerforResponseStatus)
 	json.NewEncoder(w).Encode(OutputFromSecondService)
 	fmt.Println("after")
 }
@@ -245,7 +253,19 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println()
 	//Setting output values in service 2
 
-	if Input.RequestId=="" {
+	if Input.RequestId=="demo" {
+		Output.ResponseId = Input.RequestId
+	Provider := Providers{"demo","1"}
+	//Object := Object{"Response Code","Response Status"}
+	var ProvidersList []Providers
+	ProvidersList = append(ProvidersList, Provider)
+	Provider2 := Providers{"key2","2"}
+	ProvidersList = append(ProvidersList, Provider2)
+	Output.Providers = ProvidersList
+	
+	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
+	w.WriteHeader(http.StatusBadRequest)
+	} else if Input.RequestId=="demo1" {
 		Output.ResponseId = Input.RequestId
 	Provider := Providers{"key1","1"}
 	//Object := Object{"Response Code","Response Status"}
@@ -256,8 +276,8 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	Output.Providers = ProvidersList
 	
 	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
-	
-	} else if Input.RequestId=="" {
+	w.WriteHeader(http.StatusBadRequest)
+	} else if(Input.RequestId=="demo2"){
 		Output.ResponseId = Input.RequestId
 	Provider := Providers{"key1","1"}
 	//Object := Object{"Response Code","Response Status"}
@@ -268,8 +288,8 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	Output.Providers = ProvidersList
 	
 	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
-
-	} else if(Input.RequestId==""){
+	w.WriteHeader(http.StatusBadRequest)
+	} else if(Input.RequestId=="demo3"){
 		Output.ResponseId = Input.RequestId
 	Provider := Providers{"key1","1"}
 	//Object := Object{"Response Code","Response Status"}
@@ -280,19 +300,7 @@ func SecondService(w http.ResponseWriter, r *http.Request) {
 	Output.Providers = ProvidersList
 	
 	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
-
-	} else if(Input.RequestId==""){
-		Output.ResponseId = Input.RequestId
-	Provider := Providers{"key1","1"}
-	//Object := Object{"Response Code","Response Status"}
-	var ProvidersList []Providers
-	ProvidersList = append(ProvidersList, Provider)
-	Provider2 := Providers{"key2","2"}
-	ProvidersList = append(ProvidersList, Provider2)
-	Output.Providers = ProvidersList
-	
-	Output.ResponseStatus = Object{StatusCode:"200",StatusMessage:"sucess"}
-
+	w.WriteHeader(http.StatusBadRequest)
 	} else{
 		Output.ResponseId = Input.RequestId
 	Provider := Providers{"key1","1"}
